@@ -24,7 +24,11 @@ module HstoreAccessor
         when :string, :hash, :array, :decimal
           value
         when :integer, :float, :datetime, :date, :boolean
-          TYPES[type].new.type_cast_from_user(value)
+          if ActiveRecord::VERSION::MAJOR == 5
+            TYPES[type].new.cast(value)
+          else
+            TYPES[type].new.type_cast_from_user(value)
+          end
         else value
           # Nothing.
         end
